@@ -31,15 +31,16 @@ class UserController {
     let is_admin = false;
     try {
       const client = await pool.connect();
-      const numberOfUsers = await client.query(countQuery);
-      if (!numberOfUsers) is_admin = true;
+      const {rows} = await client.query(countQuery);
+     
+      if (rows[0].count === '0') is_admin = true;
     } catch (error) {
       return res.status(400).send(error);
     } 
 
     const createQuery = `
-        users(id, email, password,is_admin, created_date, modified_date)
-            VALUES($1, $2, $3, $4, $5, $6)
+      INSERT INTO  users (id, email, password,is_admin, created_date, modified_date)
+            VALUES ($1, $2, $3, $4, $5, $6)
             returning *`;
 
     const values = [
@@ -50,6 +51,7 @@ class UserController {
       moment(new Date()),
       moment(new Date()),
     ];
+
     try {
       const client = await pool.connect();
       const { rows } = await client.query(createQuery, values);

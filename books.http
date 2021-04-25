@@ -11,3 +11,21 @@ Content-Type: application/json
     "description": "I came, I saw, I conquered."
 }
 ################################
+POST {{api}}/books/add
+Content-Type: application/json
+
+{
+    "title" :"Napoleon Bonaparte",
+    "pub_year": 2020,
+    "description": "The gretest military leader"
+}
+################################
+POST {{api}}/books/add
+Content-Type: application/json
+
+{
+    "title" :"Learning React",
+    "pub_year": 2020,
+    "description": "Latest tutorial in front end"
+}
+################################

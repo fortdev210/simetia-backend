@@ -1,9 +1,11 @@
 import express, { Application, Router } from 'express';
 import bodyParser from 'body-parser';
 import booksRouter from './routers/booksRouter';
+import usersRouter from './routers/usersRouter';
 import pool from './dbconfig/dbconnector';
 import UserModel from './models/userModel';
 import BooksModel from './models/booksModel';
+import UserToBooks from './models/userTobook';
 
 class Server {
     private app;
@@ -31,12 +33,15 @@ class Server {
     private init_db() {
         const users:UserModel = new UserModel();
         const books:BooksModel = new BooksModel();
+        const userToBooks = new UserToBooks();
         users.init();
         books.init();
+        userToBooks.init();
     }
 
     private routerConfig() {
         this.app.use('/books', booksRouter);
+        this.app.use('/users', usersRouter);
     }
 
     public start = (port: number) => {

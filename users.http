@@ -1,13 +1,32 @@
 @api = http://localhost:5000
-
-GET {{api}}/books/
-################################
-POST {{api}}/books/add
+POST {{api}}/users/signup
 Content-Type: application/json
 
 {
-    "title" :"Julies Caesar",
-    "pub_year": 2020,
-    "description": "I came, I saw, I conquered."
+    "email":"test2@gmail.com",
+    "password":"asdfasdf"
 }
 ################################
+POST {{api}}/users/login
+Content-Type: application/json
+
+{
+    "email":"test1@gmail.com",
+    "password":"asdfasdf"
+}
+
+################################
+POST {{api}}/users/af9278a5-dc42-403b-bffd-3d71df8c4bbf/add/
+Content-Type: application/json
+{
+    "id": 2
+}
+################################
+GET {{api}}/users/af9278a5-dc42-403b-bffd-3d71df8c4bbf/
+################################
+POST {{api}}/users/af9278a5-dc42-403b-bffd-3d71df8c4bbf/remove/
+Content-Type: application/json
+
+{
+    "id": 2
+}

@@ -36,6 +36,22 @@ class BooksController {
             res.status(400).send(error);
         }
     }
+
+    public removeBook: RequestHandler = async (req, res) => {
+        try {
+            const client = await pool.connect();
+            const sql = 'DELET FROM books WHERE id=$1;';
+            const values = [
+               req.body.id
+              ];
+            const {rows} = await client.query(sql,values);
+            client.release();
+            const books = rows;
+            res.send(books)
+        } catch (error) {
+            res.status(400).send(error);
+        }
+    }
 }
 
 export default BooksController;
