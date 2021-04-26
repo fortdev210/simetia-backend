@@ -14,7 +14,7 @@ class Server {
         this.app = express();
         this.config();
         this.routerConfig();
-        this.dbConnect();
+        // this.dbConnect();
         this.init_db();
     }
 
@@ -33,7 +33,7 @@ class Server {
     private init_db() {
         const users:UserModel = new UserModel();
         const books:BooksModel = new BooksModel();
-        const userToBooks = new UserToBooks();
+        const userToBooks:UserToBooks = new UserToBooks();
         users.init();
         books.init();
         userToBooks.init();

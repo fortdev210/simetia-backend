@@ -27,16 +27,16 @@ class UserController {
     const hashPassword = this.helper.hashPassword(req.body.password);
 
     //--- Set the 1st registered user as admin ---//
-    const countQuery = 'SELECT COUNT(*) FROM users;'
+    const countQuery = "SELECT COUNT(*) FROM users;";
     let is_admin = false;
     try {
       const client = await pool.connect();
-      const {rows} = await client.query(countQuery);
-     
-      if (rows[0].count === '0') is_admin = true;
+      const { rows } = await client.query(countQuery);
+
+      if (rows[0].count === "0") is_admin = true;
     } catch (error) {
       return res.status(400).send(error);
-    } 
+    }
 
     const createQuery = `
       INSERT INTO  users (id, email, password,is_admin, created_date, modified_date)
@@ -56,7 +56,7 @@ class UserController {
       const client = await pool.connect();
       const { rows } = await client.query(createQuery, values);
       const token = this.helper.generateToken(rows[0].id);
-      await pool.end();
+      client.release();
       return res.status(201).send({ token });
     } catch (error) {
       if (error.routine === "_bt_check_unique") {
@@ -64,6 +64,7 @@ class UserController {
           .status(400)
           .send({ message: "User with that EMAIL already exist" });
       }
+      await pool.end();
       return res.status(400).send(error);
     }
   };
@@ -93,32 +94,33 @@ class UserController {
       if (!this.helper.comparePassword(rows[0].password, req.body.password)) {
         return res.status(400).send({ message: "Incorrect password." });
       }
-      
+
       const token = this.helper.generateToken(rows[0].id);
       rows[0].token = token;
-      await pool.end();
+      client.release();
       return res.status(200).send(rows[0]);
-
     } catch (error) {
-        return res.status(400).send(error)
+      await pool.end();
+      return res.status(400).send(error);
     }
   };
 
   public remove: RequestHandler = async (req, res) => {
-      const deleteQuery = 'DELETE FROM users WHERE id=$1 returning *';
+    const deleteQuery = "DELETE FROM users WHERE id=$1 returning *";
 
-      try {
-          const client = await pool.connect();
-          const {rows} = await client.query(deleteQuery, [req.body.id]);
-          await pool.end();
-          if(!rows[0]) {
-            return res.status(404).send({'message': 'user not found'});
-          }
-          return res.status(204).send({ 'message': 'removed user successfully.' });
-      } catch (error) {
-        return res.status(400).send(error);
+    try {
+      const client = await pool.connect();
+      const { rows } = await client.query(deleteQuery, [req.body.id]);
+      client.release();
+      if (!rows[0]) {
+        return res.status(404).send({ message: "user not found" });
       }
-  }
+      return res.status(204).send({ message: "removed user successfully." });
+    } catch (error) {
+      await pool.end();
+      return res.status(400).send(error);
+    }
+  };
 }
 
 export default UserController;
