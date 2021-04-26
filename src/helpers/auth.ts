@@ -1,7 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { RequestHandler } from 'express';
 import pool from "../dbconfig/dbconnector";
+import dotenv from 'dotenv';
 
+dotenv.config();
 interface DECODE {
     userId: string, 
     iat:number,

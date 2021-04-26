@@ -13,6 +13,7 @@ class BooksController {
             const books = rows;
 
             client.release();
+            await pool.end();
             res.send(books)
         } catch (error) {
             res.status(400).send(error);
@@ -31,6 +32,7 @@ class BooksController {
             const {rows} = await client.query(sql,values);
             client.release();
             const books = rows;
+            await pool.end();
             res.send(books)
         } catch (error) {
             res.status(400).send(error);
@@ -47,6 +49,7 @@ class BooksController {
             const {rows} = await client.query(sql,values);
             client.release();
             const books = rows;
+            await pool.end();
             res.send(books)
         } catch (error) {
             res.status(400).send(error);
